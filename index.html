@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Flower Genie 🧞‍♂️</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="background-overlay"></div>
+
+    <div class="container">
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <form id="wishForm">
+            
+            <div class="step active-step" data-step="0">
+                <div class="icon-header">🧞‍♂️</div>
+                <h1>The Flower Genie</h1>
+                <p class="note">
+                    "I am here to find the flower that matches your soul. <br>
+                    Answer my questions gently... there is no right or wrong."
+                </p>
+                <div class="input-group">
+                    <label>First, what is your name?</label>
+                    <input type="text" id="name" placeholder="Type your name..." autocomplete="off">
+                </div>
+                <button type="button" class="next-btn" onclick="nextStep()">Start the Magic ✨</button>
+            </div>
+
+            <div class="step" data-step="1">
+                <label>1. Ungalukku romba pidicha food enna?</label>
+                <input type="text" id="food" placeholder="e.g. Pizza, Briyani...">
+                
+                <label>2. Ungaloda favorite color edhu?</label>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="color" value="#ff69b4">
+                    <span>Tap to pick color</span>
+                </div>
+                
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="2">
+                <label>3. Unga family-la yaar kitta romba close-ah irupeenga?</label>
+                <input type="text" id="family" placeholder="Mom, Dad, Sister, Brother,Cousins,Grand parents...">
+
+                <label>4. Ippo unga life-la yaaraiyavadhu romba special person irukankala or crush ?</label>
+                <select id="love" onchange="togglePartnerInput()">
+                    <option value="">Select pannunga</option>
+                    <option value="Yes">Yes ❤️</option>
+                    <option value="No">Illai</option>
+                    <option value="Confused">Konjam confuse</option>
+                </select>
+
+                <div id="partner-container" class="hidden-input">
+                    <label>4a. Avanka peyar enna?</label>
+                    <input type="text" id="partner_name" placeholder="Enter name...">
+                </div>
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="3">
+                <label>5. Oru relationship-la, unka partner kitta irukka vendiya mukkiyamana gunam?</label>
+                <input type="text" id="bf_trait" placeholder="anything any number of words...">
+
+                <label>6. Future-la unga biggest dream enna?</label>
+                <textarea id="dream" rows="3" placeholder="Neenga ninaikkira life..."></textarea>
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="4">
+                <label>7. Future-la neenga ethina kids venum-nu ninaikkireenga?</label>
+                <div class="range-slider">
+                    <input type="range" id="kids" min="0" max="10" value="2" oninput="document.getElementById('kids-val').innerText = this.value">
+                    <span id="kids-val">2</span> Kids
+                </div>
+
+                <label>8. Unga life-la romba kashtama irukkumbodhu, edhu unga mind calm pannum?</label>
+                <input type="text" id="comfort" placeholder="Music, silence, someone special...">
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="5">
+                <label>9. Neenga veliya kaattama ullae vaikkura feeling edhu?</label>
+                <select id="hidden_emotion">
+                    <option value="">Select emotion</option>
+                    <option value="Sadness">Sadness</option>
+                    <option value="Fear">Fear</option>
+                    <option value="Loneliness">Loneliness</option>
+                    <option value="Stress">Stress</option>
+                </select>
+
+                <label>10. Relationship-la romba mukkiyamana vishayam?</label>
+                <select id="priority">
+                    <option value="Trust">Trust</option>
+                    <option value="Understanding">Understanding</option>
+                    <option value="Communication">Communication</option>
+                    <option value="Care">Care</option>
+                </select>
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="6">
+                <label>11. Sollama irundhaalum, unga partner purinjikanum-nu neenga aasai padradhu enna?</label>
+                <textarea id="unsaid_need" rows="2" placeholder="Optional"></textarea>
+
+                <label>12. Neenga silent-ah irukkumbodhu, adhu usually enna artham?</label>
+                <input type="text" id="silence" placeholder="Thinking, tired...">
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="7">
+                <div class="icon-header">🧠</div>
+                <h3 style="text-align:center; color:#ffd700; margin-bottom:20px;">The Deep Dive</h3>
+
+                <label>13. Oru chinna pillaiya (As a child), what did you need more of?</label>
+                <select id="inner_child">
+                    <option value="">Select...</option>
+                    <option value="Attention/Praise">Attention & Praise</option>
+                    <option value="Safety/Protection">Safety & Protection</option>
+                    <option value="Freedom">Freedom to be myself</option>
+                    <option value="Understanding">Someone to listen</option>
+                </select>
+
+                <label>14. Sanda podum bodhu (During a fight), how do you react?</label>
+                <div class="radio-group">
+                    <label class="radio-card">
+                        <input type="radio" name="fight_style" value="Fire" id="style_fire">
+                        <span class="radio-content">
+                            <span class="emoji">🔥</span>
+                            <span class="text">I explode / Need to fix it NOW</span>
+                        </span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="fight_style" value="Ice" id="style_ice">
+                        <span class="radio-content">
+                            <span class="emoji">❄️</span>
+                            <span class="text">I shut down / Need space</span>
+                        </span>
+                    </label>
+                </div>
+
+                <label>15. Edhu ungalai udaney "Upset" aakkum? (What triggers you instantly?)</label>
+                <input type="text" id="trigger_point" placeholder="e.g. Being ignored, harsh tone...">
+
+                <label>16. If you could hear one sentence from me right now, what would it be?</label>
+                <textarea id="needed_words" rows="2" placeholder="I am proud of you... I am here..."></textarea>
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" class="next-btn" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+
+            <div class="step" data-step="8">
+                <label>13. Unga life-la unga safe place maadhiri feel pannum vishayam edhu?</label>
+                <textarea id="safe_place" rows="3" placeholder="Person, place, or feeling..."></textarea>
+
+                <div class="nav-btns">
+                    <button type="button" class="prev-btn" onclick="prevStep()"><i class="fas fa-arrow-left"></i></button>
+                    <button type="submit" class="submit-btn">Reveal My Flower 🌸</button>
+                </div>
+            </div>
+
+        </form>
+
+        <div id="loading-box" class="hidden">
+            <div class="spinner">🧞‍♂️</div>
+            <p>Consulting the stars...</p>
+        </div>
+
+        <div id="result-box" class="hidden">
+            <h2 id="flower-name"></h2>
+            <div id="flower-emoji"></div>
+            <p id="flower-description"></p>
+            <p class="thank-you-note">The Genie has granted your wish.</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

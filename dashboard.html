@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧞‍♂️ Genie's Records</title>
+    <style>
+        /* DASHBOARD STYLES */
+        body {
+            background: #1a1a2e;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .card h3 { 
+            margin-top: 0; 
+            color: #ffd700; 
+            border-bottom: 1px solid rgba(255,255,255,0.2); 
+            padding-bottom: 10px;
+        }
+
+        .answer-group { margin-bottom: 15px; }
+        .label { font-size: 0.85em; color: #a0a0a0; display: block; }
+        .value { font-size: 1.1em; color: #fff; font-weight: bold; }
+        
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #7597de;
+            text-align: right;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Hides content until password is entered */
+        #secure-content { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="secure-content">
+        <h1>📜 The Genie's Records</h1>
+        <p>Here are the wishes collected from the stars...</p>
+        
+        <div id="cards-container" class="grid-container">
+            <p>Loading magic...</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // 1. SIMPLE PASSWORD PROTECTION
+        const password = prompt("Enter the Genie's password to view records:");
+        if (password === "love123") { // CHANGE THIS PASSWORD!
+            document.getElementById('secure-content').style.display = 'block';
+            loadData();
+        } else {
+            alert("Wrong password! The Genie denies access.");
+            document.body.innerHTML = "<h1 style='color:red; text-align:center; margin-top:50px;'>ACCESS DENIED 🚫</h1>";
+        }
+
+        // 2. PASTE YOUR FIREBASE CONFIG HERE (Same as script.js)
+        const firebaseConfig = {
+           apiKey: "AIzaSyB-4IPMsKm9LLZrGQ_F1pV6S-hJHuLcBzQ",
+  authDomain: "best-valentine.firebaseapp.com",
+  projectId: "best-valentine",
+  storageBucket: "best-valentine.firebasestorage.app",
+  messagingSenderId: "1023184382166",
+  appId: "1:1023184382166:web:b0861552b711669bcec177",
+  measurementId: "G-VTSZ6WF6V6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 3. FETCH AND DISPLAY DATA
+        function loadData() {
+            const container = document.getElementById('cards-container');
+            
+            // Listen for updates in Realtime!
+            db.collection("girlfriends_wishes")
+              .orderBy("timestamp", "desc") // Newest first
+              .onSnapshot((querySnapshot) => {
+                  container.innerHTML = ""; // Clear current list
+                  
+                  if(querySnapshot.empty) {
+                      container.innerHTML = "<p>No wishes found yet...</p>";
+                      return;
+                  }
+
+                  querySnapshot.forEach((doc) => {
+                      const data = doc.data();
+                      createCard(data);
+                  });
+              });
+        }
+
+        function createCard(data) {
+            const container = document.getElementById('cards-container');
+            
+            // Format Date
+            let timeString = "Unknown time";
+            if (data.timestamp) {
+                const date = data.timestamp.toDate();
+                timeString = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+            }
+
+            const html = `
+                <div class="card">
+                    <h3>🌸 Submission</h3>
+                    
+                    <div class="answer-group">
+                        <span class="label">Mood / Emotion</span>
+                        <span class="value">${data.hiddenEmotion || '-'} (${data.priority || '-'})</span>
+                    </div>
+
+                    <div class="answer-group">
+                        <span class="label">Comfort & Safety</span>
+                        <span class="value">${data.comfortSource || '-'}</span>
+                    </div>
+
+                    <div class="answer-group">
+                        <span class="label">Dream</span>
+                        <span class="value">"${data.dream || '-'}"</span>
+                    </div>
+
+                     <div class="answer-group">
+                        <span class="label">Love Status</span>
+                        <span class="value">${data.lovesSomeone} (Kids: ${data.kidsCount})</span>
+                    </div>
+
+                    <div class="answer-group">
+                        <span class="label">Fav Color</span>
+                        <span class="value">${data.color}</span>
+                        <span class="color-box" style="background-color: ${data.color};"></span>
+                    </div>
+
+                    <div class="answer-group">
+                        <span class="label">Unsaid Need</span>
+                        <span class="value" style="color: #ff69b4;">"${data.unsaidNeed || 'None'}"</span>
+                    </div>
+
+                    <div class="timestamp">Received: ${timeString}</div>
+                </div>
+            `;
+            
+            container.innerHTML += html;
+        }
+    </script>
+</body>
+</html>
